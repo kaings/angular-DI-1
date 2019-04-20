@@ -1,4 +1,4 @@
-import {Component, HostListener, Inject, InjectionToken, Injector} from '@angular/core';
+import {Component, forwardRef, HostListener, Inject, InjectionToken, Injector} from '@angular/core';
 
 const location = new InjectionToken<string>('location');
 const weather = new InjectionToken<string>('weather');
@@ -11,17 +11,7 @@ const hash = new InjectionToken<string>('hash');
   providers: [
     {provide: location, useValue: 'http:/www.bla3.com/abc#testingDummy'},
     {provide: weather, useValue: 'sunny nice weather'},
-    {
-      provide: hash,
-      useFactory: (loc: string, weath: string) => {
-        console.log(`printout ${loc.split('#')[1]} && ${weath}`);
-        return 'this is dummy test !!!!!';
-      },
-      deps: [
-        location,
-        weather
-      ]
-    }
+    forwardRef(() => objHash)
   ]
 })
 
@@ -36,4 +26,16 @@ export class AppComponent {
   onTest() {
     console.log('Test DI \'hashTest\' ..... ', this.hashTest);
   }
+}
+
+const objHash = {
+  provide: hash,
+  useFactory: (loc: string, weath: string) => {
+    console.log(`printout ${loc.split('#')[1]} && ${weath}`);
+    return 'this is dummy test !!!!!';
+  },
+  deps: [
+    location,
+    weather
+  ]
 }
